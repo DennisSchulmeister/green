@@ -1,21 +1,21 @@
-CFLAGS	:=	-Os -Wall
+CFLAGS	?=	-Os -Wall
 
-CC	:=	cc
-RM	:=	rm -f
-INSTALL	:=	install
+CC	?=	cc
+RM	?=	rm -f
+INSTALL	?=	install
 
-DESTDIR		:=	
-PREFIX		:=	/usr/local
-BINDIR		:=	$(PREFIX)/bin
-SYSCONFDIR	:=	$(PREFIX)/etc
-MANDIR		:=      /usr/share/man
+DESTDIR		?=
+PREFIX		?=	/usr/local
+BINDIR		?=	$(PREFIX)/bin
+SYSCONFDIR	?=	$(PREFIX)/etc
+MANDIR		?=      /usr/share/man
 
-CONFIG	:=	-D GREEN_SYSCONFIG_FILE=\"$(SYSCONFDIR)/green.conf\" -D GREEN_USERCONFIG_FILE=\".green.conf\"
+CONFIG	?=	-D GREEN_SYSCONFIG_FILE=\"$(SYSCONFDIR)/green.conf\" -D GREEN_USERCONFIG_FILE=\".green.conf\"
 
-POPPLER_CFLAGS	:=	$$(pkg-config poppler-glib --cflags)
-POPPLER_LIBS	:=	$$(pkg-config poppler-glib --libs)
-SDL_CFLAGS	:=	$$(sdl-config --cflags)
-SDL_LIBS	:=	$$(sdl-config --libs)
+POPPLER_CFLAGS	?=	$$(pkg-config poppler-glib --cflags)
+POPPLER_LIBS	?=	$$(pkg-config poppler-glib --libs)
+SDL_CFLAGS	?=	$$(sdl-config --cflags)
+SDL_LIBS	?=	$$(sdl-config --libs)
 
 
 all: green
