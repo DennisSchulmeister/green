@@ -19,7 +19,7 @@
 
 
 #include <stdbool.h>
-#include "glib/poppler.h"
+#include "poppler/glib/poppler.h"
 
 
 #define GREEN_FULLSCREEN	0x0001
@@ -28,13 +28,13 @@
 typedef enum
 {
 	NATURAL, WIDTH, HEIGHT, PAGE
-	
+
 }	Green_FitMethod;
 
 typedef struct
 {
 	unsigned char	r, g, b, a;
-	
+
 }	Green_RGBA;
 
 typedef struct
@@ -42,7 +42,7 @@ typedef struct
 	int	page;
 	double	tscale;
 	cairo_surface_t	*surface;
-	
+
 }	Green_PageBuffer;
 
 typedef struct
@@ -62,7 +62,7 @@ typedef struct
 	char	*search_str;
 	unsigned char	bb;
 	Green_PageBuffer	cache;
-	
+
 }	Green_Document;
 
 typedef struct
@@ -74,7 +74,7 @@ typedef struct
 	Green_FitMethod	fit_method;
 	double	step, zoomstep;
 	unsigned char	bb;
-	
+
 	struct
 	{
 		unsigned char	flags;
@@ -85,9 +85,9 @@ typedef struct
 			// >0: timeout in ms
 		unsigned char	border_size;
 		double	border_speed;
-		
+
 	}	mouse;
-	
+
 }	Green_RTD;
 
 
@@ -110,7 +110,7 @@ inline static
 void	Green_GetDimension( PopplerPage *page, int *w, int *h, double tscale, bool rotated )
 {
 	double	pwidth, pheight;
-	
+
 	poppler_page_get_size( page, &pwidth, &pheight );
 	if (rotated)
 	{
@@ -122,7 +122,7 @@ void	Green_GetDimension( PopplerPage *page, int *w, int *h, double tscale, bool 
 		*w = pwidth * tscale;
 		*h = pheight * tscale;
 	}
-	
+
 	return;
 }
 
@@ -130,17 +130,17 @@ inline static
 void	Green_ValidateOffset( Green_Document *doc, int width, int height )
 {
 	int doc_max_x, doc_max_y;
-	
+
 	if (doc->rotation % 2)
 		Green_GetScrollRegion( doc, width, height, &doc_max_y, &doc_max_x );
 	else
 		Green_GetScrollRegion( doc, width, height, &doc_max_x, &doc_max_y );
-	
+
 	if (doc->xoffset < 0)
 		doc->xoffset = 0;
 	else if (doc->xoffset > doc_max_x)
 		doc->xoffset = doc_max_x;
-	
+
 	if (doc->yoffset < 0)
 		doc->yoffset = 0;
 	else if (doc->yoffset > doc_max_y)
@@ -151,7 +151,7 @@ inline static
 void	Green_NextVaildDoc( Green_RTD *rtd )
 {
 	int i;
-	
+
 	for (i = 1; i < rtd->doc_count; i++)
 		if (rtd->docs[(rtd->doc_cur+i)%rtd->doc_count])
 		{
@@ -182,14 +182,14 @@ int	Green_GotoPage( Green_Document *doc, int page, bool set_offset )
 {
 	if (page < 0 || page >= doc->page_count)
 		return 0;
-	
+
 	doc->page_cur = page;
 	if (set_offset)
 	{
 		doc->xoffset = 0;
 		doc->yoffset = 0;
 	}
-	
+
 	return 1;
 }
 

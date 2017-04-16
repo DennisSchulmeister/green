@@ -15,7 +15,7 @@
  */
 
 #include <stdlib.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "green.h"
 
 
@@ -26,14 +26,14 @@
 typedef enum
 {
 	NORMAL, GOTO, SEARCH, FIT, ROTATE, MIRROR
-	
+
 }	RState;
 
 typedef struct
 {
 	char	buff[64];
 	unsigned char	used, cur;
-	
+
 }	IBuffer;
 
 
@@ -44,31 +44,31 @@ void	GetInput( IBuffer *input, SDL_Event *event )
 {
 	char	c;
 	int i;
-	
+
 	switch (event->key.keysym.sym)
 	{
 		case SDLK_LEFT:
 			if (input->cur)
 				input->cur--;
-			
+
 			break;
 		case SDLK_RIGHT:
 			if (input->cur < input->used)
 				input->cur++;
-			
+
 			break;
 		case SDLK_BACKSPACE:
 			if (!input->cur)
 				break;
-			
+
 			input->cur--;
 		case SDLK_DELETE:
 			if (input->cur == input->used)
 				break;
-			
+
 			for (i = input->cur; i < input->used-1; i++)
 				input->buff[i] = input->buff[i+1];
-			
+
 			input->used--;
 			break;
 		case 'a'...'z':
@@ -97,10 +97,10 @@ void	GetInput( IBuffer *input, SDL_Event *event )
 		case '\\':
 			if (input->used == sizeof( input->buff ) - 1)
 				break;
-			
+
 			for (i = input->cur; i < input->used; i++)
 				input->buff[i+1] = input->buff[i];
-			
+
 			c = event->key.keysym.sym;
 			input->buff[input->cur] = c;
 			input->cur++;
@@ -109,7 +109,7 @@ void	GetInput( IBuffer *input, SDL_Event *event )
 		default:
 			break;
 	}
-	
+
 	return;
 }
 
@@ -192,7 +192,7 @@ void	RenderPage( Green_RTD *rtd, SDL_Rect dest, int xoff, int yoff, PopplerPage 
 				*dst = ((((*src>>16)&0xFF)>>fmt.Rloss)<<fmt.Rshift)
 					| ((((*src>>8)&0xFF)>>fmt.Gloss)<<fmt.Gshift)
 					| (((*src&0xFF)>>fmt.Bloss)<<fmt.Bshift);
-				
+
 				src = (void*)src + dir_x * rowstride;
 				dst = (void*)dst + fmt.BytesPerPixel;
 			}
@@ -210,13 +210,13 @@ void	RenderPage( Green_RTD *rtd, SDL_Rect dest, int xoff, int yoff, PopplerPage 
 				*dst = ((((*src>>16)&0xFF)>>fmt.Rloss)<<fmt.Rshift)
 					| ((((*src>>8)&0xFF)>>fmt.Gloss)<<fmt.Gshift)
 					| (((*src&0xFF)>>fmt.Bloss)<<fmt.Bshift);
-				
+
 				src += dir_x;
 				dst = (void*)dst + fmt.BytesPerPixel;
 			}
 		}
 	}
-	
+
 	if (list)
 	{
 		poppler_page_get_size( page, &pwidth, &pheight );
@@ -282,22 +282,22 @@ void	RenderPage( Green_RTD *rtd, SDL_Rect dest, int xoff, int yoff, PopplerPage 
 				continue;
 			else if (rect->x1 < 0)
 				rect->x1 = 0;
-			
+
 			if (rect->x2 < 0)
 				continue;
 			else if (rect->x2 > dest.w)
 				rect->x2 = dest.w;
-			
+
 			if (rect->y1 > dest.h)
 				continue;
 			else if (rect->y1 < 0)
 				rect->y1 = 0;
-			
+
 			if (rect->y2 < 0)
 				continue;
 			else if (rect->y2 > dest.h)
 				rect->y2 = dest.h;
-			
+
 			if (doc->rotation % 2)
 			{
 				for (y = rect->y1; y < (int)rect->y2; y++)
@@ -310,7 +310,7 @@ void	RenderPage( Green_RTD *rtd, SDL_Rect dest, int xoff, int yoff, PopplerPage 
 						*dst = ((((((*src>>16)&0xFF) * ia + ar) / 256)>>fmt.Rloss)<<fmt.Rshift)
 							| ((((((*src>>8)&0xFF) * ia + ag) / 256)>>fmt.Gloss)<<fmt.Gshift)
 							| (((((*src&0xFF) * ia + ab) / 256)>>fmt.Bloss)<<fmt.Bshift);
-						
+
 						src = (void*)src + dir_x * rowstride;
 						dst = (void*)dst + fmt.BytesPerPixel;
 					}
@@ -328,17 +328,17 @@ void	RenderPage( Green_RTD *rtd, SDL_Rect dest, int xoff, int yoff, PopplerPage 
 						*dst = ((((((*src>>16)&0xFF) * ia + ar) / 256)>>fmt.Rloss)<<fmt.Rshift)
 							| ((((((*src>>8)&0xFF) * ia + ag) / 256)>>fmt.Gloss)<<fmt.Gshift)
 							| (((((*src&0xFF) * ia + ab) / 256)>>fmt.Bloss)<<fmt.Bshift);
-						
+
 						src += dir_x;
 						dst = (void*)dst + fmt.BytesPerPixel;
 					}
 				}
 			}
 		}
-		
+
 		g_list_free( list );
 	}
-	
+
 	SDL_UnlockSurface( display );
 	return;
 }
@@ -351,7 +351,7 @@ void	Render( Green_RTD *rtd )
 	SDL_Rect	rect;
 	double	tscale;
 	int	w, h;
-	
+
 	rect.x = rect.y = 0;
 	rect.w = display->w;
 	rect.h = display->h;
@@ -361,7 +361,7 @@ void	Render( Green_RTD *rtd )
 		SDL_UpdateRect( display, 0, 0, 0, 0 );
 		return;
 	}
-	
+
 	doc = rtd->docs[rtd->doc_cur];
 	tscale = Green_Fit( doc, display->w, display->h ) * doc->finescale;
 	page = poppler_document_get_page( doc->doc, doc->page_cur );
@@ -382,10 +382,10 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 	SDL_Surface	*display = SDL_GetVideoSurface();
 	RState	state = NORMAL;
 	int	f = 0;
-	
+
 	if (Green_IsDocValid( rtd, rtd->doc_cur ))
 		doc = rtd->docs[rtd->doc_cur];
-	
+
 	switch (event->key.keysym.sym)
 	{
 		case 'q':
@@ -405,7 +405,7 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 		case 'n':
 			if (!doc || !doc->search_str)
 				break;
-			
+
 			doc->page_cur = Green_FindNext( doc, doc->page_cur + 1 );
 			*flags |= FLAG_RENDER;
 			break;
@@ -415,7 +415,7 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 		case SDLK_UP:
 			if (!doc)
 				break;
-			
+
 			Green_ScrollRelative( doc, 0, - display->h * rtd->step, display->w, display->h, 1 );
 			*flags |= FLAG_RENDER;
 			break;
@@ -428,42 +428,42 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 		case SDLK_DOWN:
 			if (!doc)
 				break;
-			
+
 			Green_ScrollRelative( doc, 0, display->h * rtd->step, display->w, display->h, 1 );
 			*flags |= FLAG_RENDER;
 			break;
                 case SDLK_j:
 			if (!doc)
 				break;
-			
+
 			Green_ScrollRelative( doc, 0, display->h * rtd->step, display->w, display->h, 1 );
 			*flags |= FLAG_RENDER;
 			break;
 		case SDLK_LEFT:
 			if (!doc)
 				break;
-			
+
 			Green_ScrollRelative( doc, - display->w * rtd->step, 0, display->w, display->h, 1 );
 			*flags |= FLAG_RENDER;
 			break;
 		case SDLK_h:
 			if (!doc)
 				break;
-			
+
 			Green_ScrollRelative( doc, - display->w * rtd->step, 0, display->w, display->h, 1 );
 			*flags |= FLAG_RENDER;
 			break;
 		case SDLK_l:
 			if (!doc)
 				break;
-			
+
 			Green_ScrollRelative( doc, display->w * rtd->step, 0, display->w, display->h, 1 );
 			*flags |= FLAG_RENDER;
 			break;
 		case SDLK_RIGHT:
 			if (!doc)
 				break;
-			
+
 			Green_ScrollRelative( doc, display->w * rtd->step, 0, display->w, display->h, 1 );
 			*flags |= FLAG_RENDER;
 			break;
@@ -472,7 +472,7 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 				Green_PrevValidDoc( rtd );
 			else if (!doc || !Green_GotoPage( doc, doc->page_cur - 1, true ))
 				break;
-			
+
 			*flags |= FLAG_RENDER;
 			break;
 		case SDLK_PAGEDOWN:
@@ -480,32 +480,32 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 				Green_NextVaildDoc( rtd );
 			else if (!doc || !Green_GotoPage( doc, doc->page_cur + 1, true ))
 				break;
-			
+
 			*flags |= FLAG_RENDER;
 			break;
 		case SDLK_m:
 			if (!doc)
 				break;
-			
+
 			state = MIRROR;
 			break;
 		case SDLK_r:
 			if (!doc)
 				break;
-			
+
 			state = ROTATE;
 			break;
 		case '+':
 			if (!doc)
 				break;
-			
+
 			Green_Zoom( doc, display->w,display->h, doc->finescale * rtd->zoomstep );
 			*flags |= FLAG_RENDER;
 			break;
 		case '-':
 			if (!doc)
 				break;
-			
+
 			Green_Zoom( doc, display->w,display->h, doc->finescale / rtd->zoomstep );
 			*flags |= FLAG_RENDER;
 			break;
@@ -534,7 +534,7 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 		case SDLK_F1:
 			if (!Green_IsDocValid( rtd, f ))
 				break;
-			
+
 			rtd->doc_cur = f;
 			*flags |= FLAG_RENDER;
 			break;
@@ -545,14 +545,14 @@ RState	NormalInput( Green_RTD *rtd, SDL_Event *event, unsigned short *flags )
 		default:
 			break;
 	}
-	
+
 	return state;
 }
 
 Uint32	live_timer( Uint32 interval, void *param )
 {
 	SDL_Event	event;
-	
+
 	event.type = SDL_USEREVENT;
 	SDL_PushEvent( &event );
 	return interval;
@@ -572,13 +572,13 @@ int	Green_SDL_Main( Green_RTD *rtd )
 	char	*str;
 	long	tmp;
 	int	x, y, width, height;
-	
+
 	if (SDL_Init( SDL_INIT_VIDEO | SDL_INIT_TIMER ))
 	{
 		fprintf( stderr, "SDL_Init failed: %s\n", SDL_GetError() );
 		return 1;
 	}
-	
+
 	SDL_WM_SetCaption( "green - the PDF reader", NULL );
 	display = SDL_SetVideoMode( rtd->width, rtd->height, 0, SDL_SWSURFACE | SDL_ANYFORMAT | SDL_RESIZABLE | (rtd->flags&GREEN_FULLSCREEN ? SDL_FULLSCREEN : 0) );
 	if (!display)
@@ -587,19 +587,19 @@ int	Green_SDL_Main( Green_RTD *rtd )
 		fprintf( stderr, "SDL_SetVideoMode failed: %s\n", SDL_GetError() );
 		return 2;
 	}
-	
+
 	if (display->format->palette)
 	{
 		SDL_Quit();
 		fprintf( stderr, "Palettes are not supported!\n" );
                 return 3;
 	}
-	
+
 	timer = SDL_AddTimer( live_interval, live_timer, NULL );
 	mouse_last = SDL_GetTicks();
 	if (!rtd->mouse.visibility)
 		SDL_ShowCursor( SDL_DISABLE );
-	
+
 	do
 	{
 		if (flags&FLAG_RENDER)
@@ -607,14 +607,14 @@ int	Green_SDL_Main( Green_RTD *rtd )
 			Render( rtd );
 			flags ^= FLAG_RENDER;
 		}
-		
+
 		event_count = 0;
 		if (!SDL_WaitEvent( &event ))
 		{
 			SDL_Quit();
 			return -1;
 		}
-		
+
 		do
 		{
 			switch (event.type)
@@ -629,7 +629,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 					{
 						if (!Green_IsDocValid( rtd, rtd->doc_cur ))
 							break;
-						
+
 						input.buff[input.used] = 0;
 						switch (state)
 						{
@@ -637,7 +637,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 								tmp = strtol( input.buff, &str, 10 );
 								if (*str || tmp <=0 || tmp > rtd->docs[rtd->doc_cur]->page_count )
 									break;
-								
+
 								rtd->docs[rtd->doc_cur]->page_cur = tmp - 1;
 								rtd->docs[rtd->doc_cur]->xoffset = 0;
 								rtd->docs[rtd->doc_cur]->yoffset = 0;
@@ -648,7 +648,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 								rtd->docs[rtd->doc_cur]->search_str = NULL;
 								if (!strlen( input.buff ))
 									break;
-								
+
 								rtd->docs[rtd->doc_cur]->search_str = strdup( input.buff );
 								tmp = Green_FindNext( rtd->docs[rtd->doc_cur], rtd->docs[rtd->doc_cur]->page_cur );
 								if (tmp < 0)
@@ -657,14 +657,14 @@ int	Green_SDL_Main( Green_RTD *rtd )
 									rtd->docs[rtd->doc_cur]->search_str = NULL;
 									break;
 								}
-								
+
 								rtd->docs[rtd->doc_cur]->page_cur = tmp;
 								flags |= FLAG_RENDER;
 								break;
 							default:
 								break;
 						}
-						
+
 						state = NORMAL;
 					}
 					else if (state == NORMAL)
@@ -683,7 +683,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						state = NORMAL;
 						if (!Green_IsDocValid( rtd, rtd->doc_cur ))
 							break;
-						
+
 						if (event.key.keysym.sym == 'n')
 							rtd->docs[rtd->doc_cur]->fit_method = NATURAL;
 						else if (event.key.keysym.sym == 'w')
@@ -692,7 +692,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 							rtd->docs[rtd->doc_cur]->fit_method = HEIGHT;
 						else if (event.key.keysym.sym == 'p')
 							rtd->docs[rtd->doc_cur]->fit_method = PAGE;
-						
+
 						if (event.key.keysym.sym == 'n'
 							|| event.key.keysym.sym == 'w'
 							|| event.key.keysym.sym == 'h'
@@ -709,7 +709,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						state = NORMAL;
 						if (!Green_IsDocValid( rtd, rtd->doc_cur ))
 							break;
-						
+
 						if (event.key.keysym.sym == 'h')
 						{
 							Green_MirrorH( rtd->docs[rtd->doc_cur] );
@@ -726,7 +726,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						state = NORMAL;
 						if (!Green_IsDocValid( rtd, rtd->doc_cur ))
 							break;
-						
+
 						if (event.key.keysym.sym == 'l')
 						{
 							Green_RotateLeft( rtd->docs[rtd->doc_cur] );
@@ -740,7 +740,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 							flags |= FLAG_RENDER;
 						}
 					}
-					
+
 					break;
 				case SDL_VIDEORESIZE:
 					display = SDL_SetVideoMode( event.resize.w, event.resize.h, 0, SDL_HWSURFACE | SDL_ANYFORMAT | SDL_RESIZABLE );
@@ -750,10 +750,10 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						fprintf( stderr, "SDL_SetVideoMode failed: %s\n", SDL_GetError() );
 						return -5;
 					}
-					
+
 					if (Green_IsDocValid( rtd, rtd->doc_cur ))
 						Green_ValidateOffset( rtd->docs[rtd->doc_cur], display->w, display->h );
-					
+
 					flags |= FLAG_RENDER;
 					break;
 				case SDL_MOUSEMOTION:
@@ -762,7 +762,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						mouse_last = SDL_GetTicks();
 						SDL_ShowCursor( SDL_ENABLE );
 					}
-					
+
 					break;
 				case SDL_MOUSEBUTTONDOWN:
 					if (rtd->mouse.visibility > 0)
@@ -770,10 +770,10 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						mouse_last = SDL_GetTicks();
 						SDL_ShowCursor( SDL_ENABLE );
 					}
-					
+
 					if (!(rtd->mouse.flags&0x01) || !Green_IsDocValid( rtd, rtd->doc_cur ))
 						break;
-					
+
 					switch (event.button.button)
 					{
 						case SDL_BUTTON_LEFT:
@@ -793,7 +793,7 @@ int	Green_SDL_Main( Green_RTD *rtd )
 							Render( rtd );
 							break;
 					}
-					
+
 					break;
 				case SDL_MOUSEBUTTONUP:
 					if (rtd->mouse.visibility)
@@ -801,16 +801,16 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						mouse_last = SDL_GetTicks();
 						SDL_ShowCursor( SDL_ENABLE );
 					}
-					
+
 					if (!(rtd->mouse.flags&0x01) || !Green_IsDocValid( rtd, rtd->doc_cur ))
 						break;
-					
+
 					if (event.button.button == SDL_BUTTON_RIGHT)
 					{
 						Green_ScrollRelative( rtd->docs[rtd->doc_cur], right_x - event.button.x, right_y - event.button.y, display->w, display->h, 1 );
 						flags |= FLAG_RENDER;
 					}
-					
+
 					break;
 				case SDL_USEREVENT:
 					if (rtd->mouse.visibility > 0)
@@ -819,43 +819,43 @@ int	Green_SDL_Main( Green_RTD *rtd )
 						if ((Uint32)(mouse_cur - mouse_last) > rtd->mouse.visibility)
 							SDL_ShowCursor( SDL_DISABLE );
 					}
-					
+
 					SDL_GetMouseState( &x, &y );
 					if (rtd->mouse.border_size && Green_IsDocValid( rtd, rtd->doc_cur ) && x >= 0 && y >= 0 && x <= display->w && y <= display->h)
 					{
 						width = display->w * rtd->mouse.border_size / 100;
 						height = display->h * rtd->mouse.border_size / 100;
-						
+
 						if (x < width)
 							width = -((width - x) * display->w / width * rtd->mouse.border_speed * live_interval / 1000);
 						else if (x > display->w - width)
 							width = (x + width - display->w) * display->w / width * rtd->mouse.border_speed * live_interval / 1000;
 						else
 							width = 0;
-						
+
 						if (y < height)
 							height = -((height - y) * display->h / height * rtd->mouse.border_speed * live_interval / 1000);
 						else if (y > display->h - height)
 							height = (y + height - display->h) * display->h / height * rtd->mouse.border_speed * live_interval / 1000;
 						else
 							height = 0;
-						
+
 						if (width || height)
 						{
 							Green_ScrollRelative( rtd->docs[rtd->doc_cur], width, height, display->w, display->h, 0 );
 							flags |= FLAG_RENDER;
 						}
 					}
-					
+
 					break;
 			}
-			
+
 			event_count++;
-			
+
 		}	while (event_count && SDL_PollEvent( &event ));
-		
+
 	}	while (!(flags&FLAG_QUIT));
-	
+
 	SDL_RemoveTimer( timer );
 	SDL_Quit();
 	return 0;
